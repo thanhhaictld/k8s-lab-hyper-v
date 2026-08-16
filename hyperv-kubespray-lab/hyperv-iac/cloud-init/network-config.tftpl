@@ -1,0 +1,13 @@
+version: 2
+ethernets:
+  eth0:
+    match:
+      macaddress: "${static_mac}"
+    set-name: eth0
+    addresses:
+      - ${ip_address}/${subnet_prefix}
+    routes:
+      - to: default
+        via: ${gateway}
+    nameservers:
+      addresses: [${dns_servers}]

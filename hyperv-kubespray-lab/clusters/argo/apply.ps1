@@ -1,0 +1,1 @@
+k0sctl apply --config cluster.yaml

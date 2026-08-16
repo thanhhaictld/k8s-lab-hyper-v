@@ -1,0 +1,21 @@
+[kube_control_plane]
+k8s-master-01 ansible_host=${master_01_ip} ip=${master_01_ip} access_ip=${master_01_ip}
+k8s-master-02 ansible_host=${master_02_ip} ip=${master_02_ip} access_ip=${master_02_ip}
+k8s-master-03 ansible_host=${master_03_ip} ip=${master_03_ip} access_ip=${master_03_ip}
+
+[etcd]
+k8s-master-01
+k8s-master-02
+k8s-master-03
+
+[kube_node]
+k8s-worker-01 ansible_host=${worker_01_ip} ip=${worker_01_ip} access_ip=${worker_01_ip}
+k8s-worker-02 ansible_host=${worker_02_ip} ip=${worker_02_ip} access_ip=${worker_02_ip}
+
+[k8s_cluster:children]
+kube_control_plane
+kube_node
+
+[all:vars]
+ansible_user=ansible
+ansible_become=true

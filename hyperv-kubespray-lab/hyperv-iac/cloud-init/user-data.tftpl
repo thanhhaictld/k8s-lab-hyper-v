@@ -1,0 +1,59 @@
+#cloud-config
+autoinstall:
+  version: 1
+
+  locale: en_US.UTF-8
+  keyboard:
+    layout: us
+  
+  identity:
+    hostname: ${hostname}
+    username: ansible
+    # Lab-only initial password: Enterprise
+    # Replace this hash for any environment beyond an isolated lab.
+    password: "$6$FWaQJuryH1xdWja1$uGrknm.0pO5YaxejeS2iTtmw.lxLLBCopI778vnTouyV/hNmfsIKWz.wQyNO90G/tkByTt97OlvOB9Av3o7Ci1"
+
+  ssh:
+    install-server: true
+    allow-pw: false
+    authorized-keys:
+      - ${ssh_public_key}
+
+  storage:
+    layout:
+      name: direct
+
+  network:
+    version: 2
+    ethernets:
+      eth0:
+        match:
+          macaddress: "${static_mac}"
+        set-name: eth0
+        addresses:
+          - ${ip_address}/${subnet_prefix}
+        routes:
+          - to: default
+            via: ${gateway}
+        nameservers:
+          addresses: [${dns_servers}]
+
+  user-data:
+    hostname: ${hostname}
+    manage_etc_hosts: true
+
+    users:
+      - name: ansible
+        groups:
+          - sudo
+        shell: /bin/bash
+        sudo: "ALL=(ALL) NOPASSWD:ALL"
+        ssh_authorized_keys:
+          - ${ssh_public_key}
+
+    ssh_pwauth: false
+
+    package_update: false
+    package_upgrade: false
+
+  shutdown: reboot
