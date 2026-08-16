@@ -68,7 +68,7 @@ resource "terraform_data" "vm_bastion" {
         -Name '${local.bastion.name}' `
         -VmRoot '${var.vm_root}' `
         -SwitchName '${var.switch_name}' `
-        -UbuntuIso '${local.autoinstall_ubuntu_iso}' `
+        -UbuntuIso '${var.ubuntu_iso}' `
         -SeedDirectory '${abspath("${path.module}/generated/${local.bastion.name}")}' `
         -OscdimgPath '${var.oscdimg_path}' `
         -CpuCount ${local.bastion.cpu} `
@@ -87,7 +87,6 @@ resource "terraform_data" "vm_bastion" {
   }
 
   depends_on = [
-    terraform_data.autoinstall_installer,
     local_file.user_data_bastion,
     local_file.meta_data_bastion,
     local_file.network_config_bastion

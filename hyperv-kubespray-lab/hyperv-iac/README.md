@@ -110,12 +110,11 @@ terraform plan
 terraform apply
 ```
 
-Terraform first creates a reusable `installer-media\\ubuntu-autoinstall.iso` below
-`vm_root`. It adds the required `autoinstall` kernel argument to the supplied Ubuntu
-ISO, which bypasses Subiquity's initial **Continue with autoinstall?** confirmation.
-The VMs then start from that ISO and use an attached CIDATA ISO containing `user-data`,
-`meta-data`, and `network-config`. The separate `network-config` file applies the
-static address to the installed system on first boot.
+Each VM boots directly from the supplied Ubuntu ISO and has an attached CIDATA ISO
+containing `user-data`, `meta-data`, and `network-config`. Confirm Subiquity's
+**Continue with autoinstall?** prompt manually; it then consumes the cloud-init seed.
+The separate `network-config` file applies the static address to the installed system
+on first boot.
 
 Watch progress:
 

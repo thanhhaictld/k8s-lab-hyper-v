@@ -37,31 +37,7 @@ locals {
     }
   }
 
-  dns_yaml               = join(", ", [for dns in var.dns_servers : "\"${dns}\""])
-  autoinstall_ubuntu_iso = "${var.vm_root}\\installer-media\\ubuntu-autoinstall.iso"
-}
-
-# Subiquity only suppresses its initial confirmation screen when `autoinstall`
-# is present on the ISO kernel command line. Hyper-V cannot supply kernel
-# arguments, so create one reusable patched installer ISO before creating VMs.
-resource "terraform_data" "autoinstall_installer" {
-  triggers_replace = [
-    filesha256(var.ubuntu_iso),
-    filesha256("${path.module}/scripts/New-AutoinstallUbuntuIso.ps1"),
-    var.oscdimg_path,
-    local.autoinstall_ubuntu_iso
-  ]
-
-  provisioner "local-exec" {
-    interpreter = ["PowerShell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command"]
-    command     = <<-EOT
-      & '${path.module}\\scripts\\New-AutoinstallUbuntuIso.ps1' `
-        -SourceIso '${var.ubuntu_iso}' `
-        -DestinationIso '${local.autoinstall_ubuntu_iso}' `
-        -OscdimgPath '${var.oscdimg_path}' `
-        -Force
-    EOT
-  }
+  dns_yaml = join(", ", [for dns in var.dns_servers : "\"${dns}\""])
 }
 
 resource "local_file" "user_data" {
@@ -130,7 +106,7 @@ resource "terraform_data" "vm" {
         -Name '${each.key}' `
         -VmRoot '${var.vm_root}' `
         -SwitchName '${var.switch_name}' `
-        -UbuntuIso '${local.autoinstall_ubuntu_iso}' `
+        -UbuntuIso '${var.ubuntu_iso}' `
         -SeedDirectory '${abspath("${path.module}/generated/${each.key}")}' `
         -OscdimgPath '${var.oscdimg_path}' `
         -CpuCount ${each.value.cpu} `
@@ -149,7 +125,6 @@ resource "terraform_data" "vm" {
   }
 
   depends_on = [
-    terraform_data.autoinstall_installer,
     local_file.user_data,
     local_file.meta_data,
     local_file.network_config

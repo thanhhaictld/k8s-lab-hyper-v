@@ -1,6 +1,6 @@
 locals {
-  argo_nodes = {
-    "k8s_argo" = {
+  argocd_nodes = {
+    "k8s_argocd" = {
       ip     = "192.168.50.100"
       role   = "worker"
       cpu    = var.worker_cpu
@@ -10,8 +10,8 @@ locals {
   }
 }
 
-resource "local_file" "argo_user_data" {
-  for_each = local.argo_nodes
+resource "local_file" "argocd_user_data" {
+  for_each = local.argocd_nodes
 
   filename = "${path.module}/generated/${each.key}/user-data"
   content = templatefile("${path.module}/cloud-init/user-data.tftpl", {
@@ -25,8 +25,8 @@ resource "local_file" "argo_user_data" {
   })
 }
 
-resource "local_file" "argo_meta_data" {
-  for_each = local.argo_nodes
+resource "local_file" "argocd_meta_data" {
+  for_each = local.argocd_nodes
 
   filename = "${path.module}/generated/${each.key}/meta-data"
   content = templatefile("${path.module}/cloud-init/meta-data.tftpl", {
@@ -36,8 +36,8 @@ resource "local_file" "argo_meta_data" {
 
 # NoCloud consumes this file on the installed system's first boot. Keep this
 # separate from the autoinstall network block, which configures the installer.
-resource "local_file" "argo_network_config" {
-  for_each = local.argo_nodes
+resource "local_file" "argocd_network_config" {
+  for_each = local.argocd_nodes
 
   filename = "${path.module}/generated/${each.key}/network-config"
   content = templatefile("${path.module}/cloud-init/network-config.tftpl", {
@@ -49,8 +49,8 @@ resource "local_file" "argo_network_config" {
   })
 }
 
-resource "terraform_data" "argo_vm" {
-  for_each = local.argo_nodes
+resource "terraform_data" "argocd_vm" {
+  for_each = local.argocd_nodes
 
   input = {
     vm_root       = var.vm_root
@@ -58,9 +58,9 @@ resource "terraform_data" "argo_vm" {
   }
 
   triggers_replace = [
-    local_file.argo_user_data[each.key].content_sha256,
-    local_file.argo_meta_data[each.key].content_sha256,
-    local_file.argo_network_config[each.key].content_sha256,
+    local_file.argocd_user_data[each.key].content_sha256,
+    local_file.argocd_meta_data[each.key].content_sha256,
+    local_file.argocd_network_config[each.key].content_sha256,
     var.ubuntu_iso,
     var.switch_name,
     tostring(each.value.cpu),
@@ -76,7 +76,7 @@ resource "terraform_data" "argo_vm" {
         -Name '${each.key}' `
         -VmRoot '${var.vm_root}' `
         -SwitchName '${var.switch_name}' `
-        -UbuntuIso '${local.autoinstall_ubuntu_iso}' `
+        -UbuntuIso '${var.ubuntu_iso}' `
         -SeedDirectory '${abspath("${path.module}/generated/${each.key}")}' `
         -OscdimgPath '${var.oscdimg_path}' `
         -CpuCount ${each.value.cpu} `
@@ -95,9 +95,8 @@ resource "terraform_data" "argo_vm" {
   }
 
   depends_on = [
-    terraform_data.autoinstall_installer,
-    local_file.argo_user_data,
-    local_file.argo_meta_data,
-    local_file.argo_network_config
+    local_file.argocd_user_data,
+    local_file.argocd_meta_data,
+    local_file.argocd_network_config
   ]
 }
