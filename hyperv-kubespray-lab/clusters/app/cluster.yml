@@ -10,18 +10,24 @@ spec:
       user: ansible
       port: 22
       keyPath: ~/.ssh/kubespray_lab
+    installFlags:
+      - --enable-metrics-scraper
     role: controller
   - ssh:
       address: 192.168.50.12
       user: ansible
       port: 22
       keyPath: ~/.ssh/kubespray_lab
+    installFlags:
+      - --enable-metrics-scraper
     role: controller
   - ssh:
       address: 192.168.50.13
       user: ansible
       port: 22
       keyPath: ~/.ssh/kubespray_lab
+    installFlags:
+      - --enable-metrics-scraper
     role: controller
   - ssh:
       address: 192.168.50.21
