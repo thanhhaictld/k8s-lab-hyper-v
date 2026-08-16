@@ -1,12 +1,12 @@
 apiVersion: k0sctl.k0sproject.io/v1beta1
 kind: Cluster
 metadata:
-  name: k0s-cluster
+  name: argocd-k0s-cluster
   user: admin
 spec:
   hosts:
   - ssh:
-      address: 127.0.0.1
+      address: 192.168.50.100
       user: ansible
       port: 22
       keyPath: ~/.ssh/kubespray_lab
@@ -50,11 +50,18 @@ spec:
             repositories:
               - name: metallb
                 url: https://metallb.github.io/metallb
-
+              - name: argo
+                url: https://argoproj.github.io/argo-helm
             charts:
               - name: metallb
                 chartname: metallb/metallb
                 namespace: metallb-system
+                order: 20
+              - name: argo-cd
+                chartname: argo/argo-cd
+                version: 10.2.1
+                namespace: argo-system
+                order: 30
         storage:
           type: etcd
         telemetry:
