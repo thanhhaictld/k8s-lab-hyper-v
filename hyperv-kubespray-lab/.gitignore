@@ -1,3 +1,6 @@
 vm_root/
 
 kubeconfig
+
+
+ssl/
