@@ -7,10 +7,10 @@ spec:
   parentRefs:
     - name: public-gateway
       namespace: kgateway-system
-      sectionName: http
+      sectionName: https
   hostnames:
     - "argocd.local"
   rules:
     - backendRefs:
         - name: argo-cd-argocd-server
-          port: 80
+          port: 443

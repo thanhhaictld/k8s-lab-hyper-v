@@ -17,6 +17,12 @@ spec:
     - name: https
       protocol: HTTPS
       port: 443
+      hostname: argocd.local
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: app-tls
       allowedRoutes:
         namespaces:
           from: All
