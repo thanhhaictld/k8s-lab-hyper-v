@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: guestbook-helm
+  namespace: argo-system
+spec:
+  generators:
+  - git:
+      repoURL: https://github.com/thanhhaictld/kargo-helm.git
+      revision: HEAD
+      directories:
+      - path: env/*
+
+  template:
+    metadata:
+      name: guestbook-helm-{{path.basename}}
+      annotations:
+        kargo.akuity.io/authorized-stage: guestbook-helm:{{path.basename}}
+    spec:
+      destination:
+        namespace: guestbook-{{path.basename}}
+        name: k0s-cluster
+      project: default
+      source:
+        path: charts/guestbook
+        repoURL: https://github.com/thanhhaictld/kargo-helm.git
+        helm:
+          valueFiles:
+          - "/env/{{path.basename}}/values.yaml"
+          - "/env/{{path.basename}}/feature-flags.yaml"
