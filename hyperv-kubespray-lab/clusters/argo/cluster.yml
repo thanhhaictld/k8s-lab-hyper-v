@@ -59,7 +59,7 @@ spec:
                 order: 20
               - name: argo-cd
                 chartname: argo/argo-cd
-                version: 10.2.1
+                version: 10.4.0
                 namespace: argo-system
                 order: 30
                 values: |

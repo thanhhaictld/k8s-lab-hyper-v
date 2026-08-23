@@ -54,4 +54,4 @@ if(Get-Content -Path "C:\Windows\System32\drivers\etc\hosts" | Select-String -Pa
 
 Write-Host "ARGO_IP: $ARGO_IP"
 Write-Host "ARGO_HOST: $ARGO_HOST"
-curl.exe https://$ARGO_IP/ -H "Host: $ARGO_HOST" -v
+curl.exe -k https://$ARGO_HOST/ -v 
