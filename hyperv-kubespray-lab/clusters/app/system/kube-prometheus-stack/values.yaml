@@ -1,0 +1,48 @@
+storageAffinity: &storageAffinity
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: storage.openebs.io/hostpath
+              operator: In
+              values:
+                - "true"
+
+prometheus:
+  prometheusSpec:
+    replicas: 1
+    retention: 7d
+    affinity: *storageAffinity
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: openebs-hostpath
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 20Gi
+
+alertmanager:
+  alertmanagerSpec:
+    replicas: 1
+    affinity: *storageAffinity
+    storage:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: openebs-hostpath
+          accessModes:
+            - ReadWriteOnce
+          resources:
+            requests:
+              storage: 5Gi
+
+grafana:
+  affinity: *storageAffinity
+  persistence:
+    enabled: true
+    type: pvc
+    storageClassName: openebs-hostpath
+    accessModes:
+      - ReadWriteOnce
+    size: 5Gi

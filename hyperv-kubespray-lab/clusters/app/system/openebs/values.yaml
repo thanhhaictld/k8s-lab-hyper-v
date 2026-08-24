@@ -1,0 +1,11 @@
+# The StorageClass is declared in storage-worker.yaml so it can include the
+# cluster-specific allowedTopologies restriction for k8s-worker-01.
+analytics:
+  enabled: false
+
+hostpathClass:
+  enabled: false
+
+localpv:
+  enabled: true
+  replicas: 1

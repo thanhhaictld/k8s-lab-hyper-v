@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: monitoring
+
+resources:
+  - namespace.yaml
+
+helmCharts:
+  - name: kube-prometheus-stack
+    releaseName: kube-prometheus-stack
+    namespace: monitoring
+    version: 88.1.5
+    repo: https://prometheus-community.github.io/helm-charts
+    valuesFile: values.yaml
+    includeCRDs: true
+
+# Argo CD applies CRDs before the Prometheus and Alertmanager custom resources.
+patches:
+  - target:
+      group: apiextensions.k8s.io
+      version: v1
+      kind: CustomResourceDefinition
+    patch: |-
+      - op: add
+        path: /metadata/annotations/argocd.argoproj.io~1sync-wave
+        value: "-1"

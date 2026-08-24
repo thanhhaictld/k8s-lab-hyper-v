@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-openebs
+  namespace: argo-system
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/thanhhaictld/k8s-lab-hyper-v.git
+    targetRevision: HEAD
+    path: hyperv-kubespray-lab/clusters/app/system/openebs
+  destination:
+    name: k0s-cluster
+    namespace: openebs
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: app-kube-prometheus-stack
+  namespace: argo-system
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/thanhhaictld/k8s-lab-hyper-v.git
+    targetRevision: HEAD
+    path: hyperv-kubespray-lab/clusters/app/system/kube-prometheus-stack
+  destination:
+    name: k0s-cluster
+    namespace: monitoring
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
