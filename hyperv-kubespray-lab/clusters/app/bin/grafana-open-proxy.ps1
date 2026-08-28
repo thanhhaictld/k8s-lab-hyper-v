@@ -39,3 +39,4 @@ if (-not $NoBrowser) {
 }
 
 kubectl port-forward --namespace $namespace "service/$service" "${Port}:80"
+
