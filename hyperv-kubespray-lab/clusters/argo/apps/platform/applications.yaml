@@ -35,3 +35,23 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: signoz
+  namespace: argo-system
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/thanhhaictld/k8s-lab-hyper-v.git
+    targetRevision: HEAD
+    path: hyperv-kubespray-lab/clusters/app/system/signoz
+  destination:
+    name: k0s-cluster
+    namespace: o11y
+  syncPolicy:
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
