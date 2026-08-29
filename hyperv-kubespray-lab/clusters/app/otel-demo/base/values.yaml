@@ -1,0 +1,78 @@
+# Export demo telemetry to the SigNoz collector managed by the platform.
+default:
+  envOverrides:
+    - name: OTEL_COLLECTOR_NAME
+      value: signoz-otel-collector.o11y.svc.cluster.local
+    - name: OTEL_RESOURCE_ATTRIBUTES_EXTRA
+      value: service.namespace=otel-demo,deployment.environment.name=dev
+
+components:
+  accounting:
+    enabled: false
+  ad:
+    enabled: true
+  agent:
+    enabled: false
+  astronomy-db:
+    enabled: true
+  cart:
+    enabled: true
+  chatbot:
+    enabled: false
+  checkout:
+    enabled: true
+  currency:
+    enabled: true
+  email:
+    enabled: true
+  firepit:
+    enabled: false
+  flagd:
+    enabled: true
+  fraud-detection:
+    enabled: false
+  frontend:
+    enabled: true
+  frontend-proxy:
+    enabled: true
+  image-provider:
+    enabled: false
+  kafka:
+    enabled: true
+  load-generator:
+    enabled: true
+    envOverrides:
+      - name: LOAD_GENERATOR_VUS
+        value: "1"
+  mcp:
+    enabled: false
+  opamp-server:
+    enabled: false
+  payment:
+    enabled: true
+  product-catalog:
+    enabled: true
+  quote:
+    enabled: true
+  recommendation:
+    enabled: true
+  shipping:
+    enabled: true
+  telemetry-docs:
+    enabled: false
+  valkey-cart:
+    enabled: true
+
+# Do not install the demo's observability stack; SigNoz is installed separately.
+opentelemetry-collector:
+  enabled: false
+otel-ebpf-profiler:
+  enabled: false
+jaeger:
+  enabled: false
+prometheus:
+  enabled: false
+grafana:
+  enabled: false
+opensearch:
+  enabled: false
